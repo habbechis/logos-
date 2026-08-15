@@ -586,10 +586,10 @@ let state = {
 };
 
 const DEFAULT_MATCHES = [
-  { home: 'ESS', away: 'EST', time: '16:30', stadium: 'حمادي العقربي بقرادس', channels: ['WATANIASPORT'] },
-  { home: 'ASM', away: 'CAB', time: '16:30', stadium: 'بنزرت 15 أكتوبر', channels: ['WATANIA1'] },
-  { home: 'CSHL', away: 'ESM', time: '16:30', stadium: 'الملعب بالمتلوي', channels: ['WATANIA2'] },
-  { home: 'CA', away: 'USBG', time: '16:30', stadium: 'المركب الرياضي بجرجيس', channels: ['WATANIASPORT'] },
+  { home: 'ESS', away: 'EST', time: '16:30', stadium: 'حمادي العقربي برادس', channels: [] },
+  { home: 'ASM', away: 'CAB', time: '16:30', stadium: 'بنزرت 15 أكتوبر', channels: [] },
+  { home: 'CA', away: 'ESM', time: '16:30', stadium: 'الملعب بالمتلوي', channels: [] },
+  { home: 'OB', away: 'ESZ', time: '16:30', stadium: 'المركب الرياضي بجرجيس', channels: [] },
 ];
 
 const imageCache = {};
@@ -641,6 +641,8 @@ function preloadAllAssets() {
   for (const [key, ch] of Object.entries(CHANNELS)) {
     promises.push(loadImage('channel_' + key, ch.file));
   }
+  promises.push(loadImage('bg_red', 'bg-red.jpg'));
+  promises.push(loadImage('ligue1_logo', 'ligue1-logo.png'));
   return Promise.all(promises);
 }
 
@@ -796,29 +798,35 @@ function drawMatchRow(ctx, match, x, y, w, h) {
   const homeImg = homeTeam ? imageCache['team_' + match.home] : null;
   const awayImg = awayTeam ? imageCache['team_' + match.away] : null;
   
+  // Bar height (leaving space below for team names)
+  const barH = h * 0.62;
+  
+  // Draw the match bar
   ctx.save();
-  const barGrad = ctx.createLinearGradient(x, y, x, y + h);
-  barGrad.addColorStop(0, 'rgba(120, 0, 20, 0.55)');
-  barGrad.addColorStop(0.5, 'rgba(80, 0, 15, 0.65)');
-  barGrad.addColorStop(1, 'rgba(120, 0, 20, 0.55)');
+  const barGrad = ctx.createLinearGradient(x, y, x, y + barH);
+  barGrad.addColorStop(0, 'rgba(90, 0, 15, 0.55)');
+  barGrad.addColorStop(0.5, 'rgba(70, 0, 10, 0.65)');
+  barGrad.addColorStop(1, 'rgba(90, 0, 15, 0.55)');
   ctx.fillStyle = barGrad;
-  drawRoundedRect(ctx, x, y, w, h, 14);
+  drawRoundedRect(ctx, x, y, w, barH, 18);
   ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,255,0.08)';
-  ctx.fillRect(x + 14, y + 1, w - 28, 2);
+  
+  // Subtle top highlight
+  ctx.fillStyle = 'rgba(255,255,255,0.06)';
+  ctx.fillRect(x + 18, y + 1, w - 36, 2);
+  
+  // Border
   ctx.strokeStyle = 'rgba(255,255,255,0.08)';
   ctx.lineWidth = 1;
   ctx.stroke();
   ctx.restore();
   
-  const sideMargin = w * 0.02;
-  const centerW = w * 0.32;
-  const sideW = (w - centerW) / 2 - sideMargin;
   const centerX = x + w / 2;
-  const logoSize = Math.min(85, h * 0.42);
-  const nameY = y + h * 0.72;
+  const logoSize = Math.min(100, barH * 0.55);
+  const logoY = y + barH / 2;
   
-  const homeX = x + w - sideW / 2 - sideMargin;
+  // Home logo (RIGHT side)
+  const homeX = x + w - 90;
   if (homeImg) {
     const aspect = homeImg.width / homeImg.height;
     let dw = logoSize;
@@ -826,19 +834,14 @@ function drawMatchRow(ctx, match, x, y, w, h) {
     if (aspect > 1.1) { dh = dw / aspect; }
     else if (aspect < 0.9) { dw = dh * aspect; }
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.4)';
-    ctx.shadowBlur = 15;
-    ctx.drawImage(homeImg, homeX - dw/2, y + h*0.22 - dh/2, dw, dh);
+    ctx.shadowColor = 'rgba(0,0,0,0.35)';
+    ctx.shadowBlur = 12;
+    ctx.drawImage(homeImg, homeX - dw/2, logoY - dh/2, dw, dh);
     ctx.restore();
   }
-  ctx.fillStyle = '#fff';
-  ctx.font = getFont(Math.max(15, h * 0.11));
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-  const homeName = homeTeam ? homeTeam.name : match.home;
-  wrapText(ctx, homeName, homeX, nameY, sideW - 10, h * 0.13);
   
-  const awayX = x + sideW / 2 + sideMargin;
+  // Away logo (LEFT side)
+  const awayX = x + 90;
   if (awayImg) {
     const aspect = awayImg.width / awayImg.height;
     let dw = logoSize;
@@ -846,59 +849,36 @@ function drawMatchRow(ctx, match, x, y, w, h) {
     if (aspect > 1.1) { dh = dw / aspect; }
     else if (aspect < 0.9) { dw = dh * aspect; }
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.4)';
-    ctx.shadowBlur = 15;
-    ctx.drawImage(awayImg, awayX - dw/2, y + h*0.22 - dh/2, dw, dh);
+    ctx.shadowColor = 'rgba(0,0,0,0.35)';
+    ctx.shadowBlur = 12;
+    ctx.drawImage(awayImg, awayX - dw/2, logoY - dh/2, dw, dh);
     ctx.restore();
   }
-  const awayName = awayTeam ? awayTeam.name : match.away;
-  wrapText(ctx, awayName, awayX, nameY, sideW - 10, h * 0.13);
   
-  const centerTop = y + h * 0.18;
+  // Time - large and centered in bar
   ctx.fillStyle = '#fff';
-  ctx.font = getFont(Math.max(30, h * 0.24));
+  ctx.font = getFont(Math.max(44, barH * 0.38));
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(match.time, centerX, centerTop + h * 0.18);
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
-  ctx.font = `bold ${Math.max(12, h * 0.07)}px Arial`;
-  ctx.fillText('—', centerX, centerTop + h * 0.38);
-  ctx.fillStyle = 'rgba(255,255,255,0.8)';
-  ctx.font = getFont(Math.max(13, h * 0.095));
-  ctx.fillText(match.stadium, centerX, centerTop + h * 0.52);
+  ctx.fillText(match.time, centerX, y + barH * 0.38);
   
-  if (match.channels && match.channels.length > 0) {
-    const chY = centerTop + h * 0.72;
-    const chH = Math.min(32, h * 0.16);
-    let totalW = 0;
-    const chWidths = [];
-    match.channels.forEach(chKey => {
-      const chImg = imageCache['channel_' + chKey];
-      if (chImg) {
-        const aspect = chImg.width / chImg.height;
-        let cw = chH * 1.6;
-        let ch = chH;
-        if (aspect > 1.6) { ch = cw / aspect; }
-        else if (aspect < 1.6) { cw = ch * aspect; }
-        chWidths.push({ w: cw, h: ch, img: chImg });
-        totalW += cw + 10;
-      } else {
-        chWidths.push(null);
-      }
-    });
-    totalW -= 10;
-    let chX = centerX - totalW / 2;
-    chWidths.forEach((item) => {
-      if (!item) return;
-      ctx.save();
-      ctx.fillStyle = 'rgba(255,255,255,0.12)';
-      drawRoundedRect(ctx, chX - 5, chY - item.h/2 - 5, item.w + 10, item.h + 10, 8);
-      ctx.fill();
-      ctx.restore();
-      ctx.drawImage(item.img, chX, chY - item.h/2, item.w, item.h);
-      chX += item.w + 14;
-    });
-  }
+  // Stadium - below time, inside bar
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.font = getFont(Math.max(17, barH * 0.14));
+  ctx.fillText(match.stadium, centerX, y + barH * 0.74);
+  
+  // Team names - below the bar
+  const nameY = y + barH + 18;
+  ctx.fillStyle = '#fff';
+  ctx.font = getFont(Math.max(20, h * 0.1));
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  
+  const homeName = homeTeam ? homeTeam.name : match.home;
+  wrapText(ctx, homeName, homeX, nameY, 200, 30);
+  
+  const awayName = awayTeam ? awayTeam.name : match.away;
+  wrapText(ctx, awayName, awayX, nameY, 200, 30);
 }
 
 function renderPoster() {
@@ -906,66 +886,82 @@ function renderPoster() {
   const h = 1350;
   ctx.clearRect(0, 0, w, h);
   
-  const bgGrad = ctx.createRadialGradient(w/2, h/3, 100, w/2, h/2, h);
-  bgGrad.addColorStop(0, '#a00020');
-  bgGrad.addColorStop(0.4, '#800018');
-  bgGrad.addColorStop(1, '#4a000e');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, w, h);
+  // Draw background image
+  const bgImg = imageCache['bg_red'];
+  if (bgImg) {
+    ctx.drawImage(bgImg, 0, 0, w, h);
+  } else {
+    // Fallback gradient
+    const bgGrad = ctx.createRadialGradient(w/2, h/3, 100, w/2, h/2, h);
+    bgGrad.addColorStop(0, '#a00020');
+    bgGrad.addColorStop(0.4, '#800018');
+    bgGrad.addColorStop(1, '#4a000e');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+  }
   
-  drawFootballTexture(ctx, w, h);
+  const headerTop = 55;
   
-  const vigGrad = ctx.createRadialGradient(w/2, h/2, h*0.25, w/2, h/2, h*0.95);
-  vigGrad.addColorStop(0, 'rgba(0,0,0,0)');
-  vigGrad.addColorStop(1, 'rgba(0,0,0,0.5)');
-  ctx.fillStyle = vigGrad;
-  ctx.fillRect(0, 0, w, h);
+  // Draw LIGUE 1 logo on top right
+  const ligueLogo = imageCache['ligue1_logo'];
+  if (ligueLogo) {
+    const logoW = 170;
+    const logoH = logoW * (ligueLogo.height / ligueLogo.width);
+    ctx.drawImage(ligueLogo, w - logoW - 50, headerTop - 10, logoW, logoH);
+  } else {
+    drawLigue1Logo(ctx, w - 115, headerTop + 85, 140);
+  }
   
-  const headerTop = 35;
-  drawLigue1Logo(ctx, w - 115, headerTop + 85, 140);
-  
-  const textX = w - 210;
-  let textY = headerTop + 25;
-  ctx.textAlign = 'right';
+  // Title text on left side
+  const textX = 60;
+  let textY = headerTop + 10;
+  ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillStyle = '#fff';
-  ctx.font = getFont(48);
+  ctx.font = getFont(52);
   ctx.fillText(state.title, textX, textY);
-  textY += 58;
-  ctx.font = getFont(36);
+  textY += 64;
+  ctx.font = getFont(40);
   ctx.fillText(state.subtitle, textX, textY);
-  textY += 48;
-  ctx.font = getFont(30);
-  ctx.fillText(state.league, textX, textY);
-  textY += 55;
-  ctx.fillStyle = '#ffd700';
+  textY += 52;
   ctx.font = getFont(32);
-  ctx.fillText(state.date, textX, textY);
+  ctx.fillText(state.league, textX, textY);
   
-  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  // Decorative line
+  const lineY = headerTop + 210;
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)';
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(50, headerTop + 245);
-  ctx.lineTo(w - 50, headerTop + 245);
+  ctx.moveTo(50, lineY);
+  ctx.lineTo(w - 50, lineY);
   ctx.stroke();
   
-  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  // Decorative dots
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
   for (let i = 0; i < 5; i++) {
     ctx.beginPath();
-    ctx.arc(w/2 - 80 + i * 40, headerTop + 245, 3, 0, Math.PI * 2);
+    ctx.arc(w/2 - 80 + i * 40, lineY, 3, 0, Math.PI * 2);
     ctx.fill();
   }
   
-  const matchesTop = headerTop + 270;
-  const bottomPadding = 50;
+  // Date centered below line
+  ctx.fillStyle = '#ffd700';
+  ctx.font = getFont(36);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText(state.date, w / 2, lineY + 20);
+  
+  // Matches area
+  const matchesTop = lineY + 80;
+  const bottomPadding = 60;
   const availableH = h - matchesTop - bottomPadding;
   const matchCount = state.matches.length;
-  const gap = Math.max(10, 18 - matchCount * 2);
+  const gap = Math.max(12, 20 - matchCount * 2);
   const rowH = (availableH - (matchCount - 1) * gap) / matchCount;
   
   state.matches.forEach((match, idx) => {
     const y = matchesTop + idx * (rowH + gap);
-    drawMatchRow(ctx, match, 45, y, w - 90, rowH);
+    drawMatchRow(ctx, match, 50, y, w - 100, rowH);
   });
   
   const wrapper = document.getElementById('posterWrapper');
