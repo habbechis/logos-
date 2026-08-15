@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOOTBALL POSTER STUDIO</title>
+<style>
+@font-face {
+  font-family: 'YaModernPro';
+  src: url('https://raw.githubusercontent.com/habbechis/logos-/main/Ya-ModernPro-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'YaModernPro', 'Segoe UI', Tahoma, sans-serif;
+  background: #0d0d1a;
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bg-anim {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 20% 20%, #1a0a2e 0%, #0d0d1a 40%, #050510 100%);
+  overflow: hidden;
+}
+
+.bg-anim::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%);
+  top: -200px;
+  right: -200px;
+  animation: float1 20s ease-in-out infinite;
+}
+
+.bg-anim::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(138,43,226,0.06) 0%, transparent 70%);
+  bottom: -150px;
+  left: -150px;
+  animation: float2 25s ease-in-out infinite;
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-50px, 30px) scale(1.1); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(0.9); }
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(201,162,39,0.4);
+  border-radius: 50%;
+  animation: particle-float 15s linear infinite;
+}
+
+@keyframes particle-float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+}
+
+.app-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 380px;
+  background: rgba(20, 20, 40, 0.85);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255,255,255,0.06);
+  padding: 24px;
+  overflow-y: auto;
+  max-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #d4af37;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.sidebar-subtitle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section {
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #d4af37;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 16px;
+  background: #d4af37;
+  border-radius: 2px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #d4af37;
+  background: rgba(255,255,255,0.08);
+}
+
+.form-group input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.match-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.match-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.match-number {
+  font-size: 12px;
+  color: #d4af37;
+  font-weight: bold;
+}
+
+.match-remove {
+  background: rgba(255,80,80,0.15);
+  border: none;
+  color: #ff5050;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.match-remove:hover {
+  background: rgba(255,80,80,0.3);
+}
+
+.match-teams {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.match-teams select {
+  flex: 1;
+}
+
+.match-vs {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  font-weight: bold;
+}
+
+.match-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #d4af37, #c9a227);
+  color: #0d0d1a;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212,175,55,0.3);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(34,197,94,0.3);
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.preview-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+}
+
+.poster-wrapper {
+  position: relative;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.poster-wrapper:hover {
+  transform: scale(1.01);
+}
+
+.poster-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.scale-info {
+  margin-top: 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,13,26,0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.5s;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(212,175,55,0.2);
+  border-top-color: #d4af37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 16px;
+  color: #d4af37;
+  font-size: 14px;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(212,175,55,0.3);
+  border-radius: 3px;
+}
+
+@media (max-width: 1024px) {
+  .app-container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    max-height: 50vh;
+    border-left: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .preview-area {
+    padding: 20px;
+  }
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.toggle-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: rgba(255,255,255,0.1);
+  border-radius: 24px;
+  transition: 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: #d4af37;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+.channel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.channel-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.channel-option:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.channel-option input {
+  width: auto;
+}
+
+.add-match-btn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(212,175,55,0.1);
+  border: 2px dashed rgba(212,175,55,0.3);
+  border-radius: 10px;
+  color: #d4af37;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.add-match-btn:hover {
+  background: rgba(212,175,55,0.2);
+  border-color: #d4af37;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 16px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-anim" id="bgAnim"></div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">جاري تحميل الأصول...</div>
+</div>
+
+<div class="app-container">
+  <aside class="sidebar">
+    <div class="sidebar-title">⚽ FOOTBALL POSTER STUDIO</div>
+    <div class="sidebar-subtitle">صمم بوستر مبارياتك باحترافية</div>
+
+    <div class="section">
+      <div class="section-title">معلومات البطولة</div>
+      <div class="form-group">
+        <label>العنوان الرئيسي</label>
+        <input type="text" id="titleInput" value="تعيينات مباريات" onchange="updateState()">
+      </div>
+      <div class="form-group">
+        <label>العنوان الفرعي</label>
+        <input type="text" id="subtitleInput" value="الجولة الأولى ذهاب" onchange="updateState()">
+      </div>
+      <div class="form-group">
+        <label>البطولة</label>
+        <input type="text" id="leagueInput" value="لبطولة الرابطة 1" onchange="updateState()">
+      </div>
+      <div class="form-group">
+        <label>التاريخ</label>
+        <input type="text" id="dateInput" value="الأحد 23 أوت 2026" onchange="updateState()">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">المباريات</div>
+      <div id="matchesContainer"></div>
+      <button class="add-match-btn" onclick="addMatch()">+ إضافة مباراة</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">الإجراءات</div>
+      <button class="btn btn-success btn-block" onclick="downloadPNG()">📥 تحميل البوستر (PNG)</button>
+      <button class="btn btn-secondary btn-block" onclick="resetToDefault()">🔄 استعادة الافتراضي</button>
+    </div>
+  </aside>
+
+  <main class="preview-area">
+    <div class="poster-wrapper" id="posterWrapper">
+      <canvas id="posterCanvas" width="1080" height="1350" class="poster-canvas"></canvas>
+    </div>
+    <div class="scale-info" id="scaleInfo"></div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="renderPoster()">🎨 تحديث المعاينة</button>
+    </div>
+  </main>
+</div>
+
+<script>
+const BASE_URL = 'https://raw.githubusercontent.com/habbechis/logos-/main/';
+
+const TEAMS = {
+  'EST': { name: 'الترجي الرياضي التونسي', file: 'Espérance Sportive de Tunis (EST).png', short: 'EST' },
+  'ESS': { name: 'النجم الرياضي الساحلي', file: 'Étoile Sportive du Sahel (ESS).png', short: 'ESS' },
+  'CSS': { name: 'النادي الرياضي الصفاقسي', file: 'Club Sportif Sfaxien (CSS).png', short: 'CSS' },
+  'CAB': { name: 'النادي الرياضي البنزرتي', file: 'Club Athlétique Bizertin(CAB).png', short: 'CAB' },
+  'USBG': { name: 'الاتحاد الرياضي ببنقردان', file: 'Union Sportive de Ben Guerdane (USBG).png', short: 'USBG' },
+  'ESZ': { name: 'الترجي الرياضي الجرجيسي', file: 'Espérance Sportive de Zarzis (ESZ).png', short: 'ESZ' },
+  'ESM': { name: 'النجم الرياضي بالمتلوي', file: 'Étoile Sportive de Métlaoui (ESM).png', short: 'ESM' },
+  'ST': { name: 'الستاد التونسي', file: 'Stade Tunisien (ST).png', short: 'ST' },
+  'USM': { name: 'الاتحاد المنستيري', file: 'Union Sportive Monastirienne (USM).png', short: 'USM' },
+  'OB': { name: 'الأولمبي الباجي', file: 'Olympique de Béja (OB).png', short: 'OB' },
+  'ASM': { name: 'المستقبل الرياضي بالمرسى', file: 'Avenir Sportif de La Marsa (ASM).png', short: 'ASM' },
+  'CSHL': { name: 'نادي حمام الأنف', file: 'Club Sportif de Hammam-Lif (CSHL).png', short: 'CSHL' },
+  'JSO': { name: 'شباب الأمران', file: "Jeunesse Sportive d'El Omrane (JSO).png", short: 'JSO' },
+  'PSS': { name: 'تقدم ساقية الزيت', file: 'Progrès Sportif de Sakiet Eddaïer (PSS).png', short: 'PSS' },
+  'ESHS': { name: 'أمل حمام سوسة', file: 'Espoir Sportif de Hammam Sousse (ESHS).png', short: 'ESHS' },
+  'CA': { name: 'النادي الإفريقي', file: 'Club Africain (CA).svg', short: 'CA' },
+  'EL_KESS': { name: 'القصرين', file: 'EL KESS.png', short: 'EL_KESS' },
+};
+
+const CHANNELS = {
+  'WATANIA1': { name: 'WATANIA 1', file: 'WATANIA 1 .png' },
+  'WATANIA2': { name: 'WATANIA 2', file: 'WATANIA 2.png' },
+  'WATANIASPORT': { name: 'WATANIA SPORT', file: 'watania sport.png' },
+  'DIWANSPORT': { name: 'DIWAN SPORT', file: 'diwan-sport.png' },
+};
+
+let state = {
+  title: 'تعيينات مباريات',
+  subtitle: 'الجولة الأولى ذهاب',
+  league: 'لبطولة الرابطة 1',
+  date: 'الأحد 23 أوت 2026',
+  matches: []
+};
+
+const DEFAULT_MATCHES = [
+  { home: 'ESS', away: 'EST', time: '16:30', stadium: 'حمادي العقربي بقرادس', channels: ['WATANIASPORT'] },
+  { home: 'ASM', away: 'CAB', time: '16:30', stadium: 'بنزرت 15 أكتوبر', channels: ['WATANIA1'] },
+  { home: 'CSHL', away: 'ESM', time: '16:30', stadium: 'الملعب بالمتلوي', channels: ['WATANIA2'] },
+  { home: 'CA', away: 'USBG', time: '16:30', stadium: 'المركب الرياضي بجرجيس', channels: ['WATANIASPORT'] },
+];
+
+const imageCache = {};
+
+function getAssetUrl(filename) {
+  return BASE_URL + encodeURIComponent(filename);
+}
+
+function loadImage(key, filename) {
+  return new Promise((resolve) => {
+    if (imageCache[key]) {
+      resolve(imageCache[key]);
+      return;
+    }
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      imageCache[key] = img;
+      resolve(img);
+    };
+    img.onerror = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 120;
+      canvas.height = 120;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#2a2a4a';
+      ctx.fillRect(0, 0, 120, 120);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 28px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(key.split('_').pop(), 60, 60);
+      const fallbackImg = new Image();
+      fallbackImg.src = canvas.toDataURL();
+      fallbackImg.onload = () => {
+        imageCache[key] = fallbackImg;
+        resolve(fallbackImg);
+      };
+    };
+    img.src = getAssetUrl(filename);
+  });
+}
+
+function preloadAllAssets() {
+  const promises = [];
+  for (const [key, team] of Object.entries(TEAMS)) {
+    promises.push(loadImage('team_' + key, team.file));
+  }
+  for (const [key, ch] of Object.entries(CHANNELS)) {
+    promises.push(loadImage('channel_' + key, ch.file));
+  }
+  return Promise.all(promises);
+}
+
+const canvas = document.getElementById('posterCanvas');
+const ctx = canvas.getContext('2d');
+
+function getFont(size) {
+  return `bold ${size}px YaModernPro, 'Segoe UI', Tahoma, sans-serif`;
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  const lines = [];
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line + words[i] + ' ';
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && i > 0) {
+      lines.push(line.trim());
+      line = words[i] + ' ';
+    } else {
+      line = testLine;
+    }
+  }
+  lines.push(line.trim());
+  for (let i = 0; i < lines.length; i++) {
+    ctx.fillText(lines[i], x, y + i * lineHeight);
+  }
+  return lines.length;
+}
+
+function drawRoundedRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawLigue1Logo(ctx, cx, cy, size) {
+  ctx.save();
+  const r = size / 2;
+  ctx.shadowColor = 'rgba(201, 162, 39, 0.4)';
+  ctx.shadowBlur = 20;
+  const goldGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+  goldGrad.addColorStop(0, '#d4af37');
+  goldGrad.addColorStop(0.5, '#f0d878');
+  goldGrad.addColorStop(1, '#b8941f');
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = goldGrad;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 0.92, 0, Math.PI * 2);
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 0.85, 0, Math.PI * 2);
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fill();
+  ctx.fillStyle = '#d4af37';
+  const starY = cy - r * 0.38;
+  const starR = r * 0.14;
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const outerAngle = (Math.PI * 2 * i / 5) - Math.PI / 2;
+    const innerAngle = outerAngle + Math.PI / 5;
+    const ox = cx + starR * Math.cos(outerAngle);
+    const oy = starY + starR * Math.sin(outerAngle);
+    const ix = cx + starR * 0.4 * Math.cos(innerAngle);
+    const iy = starY + starR * 0.4 * Math.sin(innerAngle);
+    if (i === 0) ctx.moveTo(ox, oy);
+    else ctx.lineTo(ox, oy);
+    ctx.lineTo(ix, iy);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = `bold ${r * 0.32}px Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('LIGUE', cx, cy + r * 0.02);
+  ctx.fillStyle = '#d4af37';
+  ctx.font = `bold ${r * 0.42}px Arial, sans-serif`;
+  ctx.fillText('1', cx, cy + r * 0.38);
+  ctx.restore();
+}
+
+function drawFootballTexture(ctx, w, h) {
+  ctx.save();
+  ctx.globalAlpha = 0.035;
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1.5;
+  const hexR = 50;
+  const hexH = hexR * Math.sqrt(3);
+  for (let row = -2; row < h / hexH + 4; row++) {
+    for (let col = -2; col < w / (hexR * 1.5) + 4; col++) {
+      const cx = col * hexR * 1.5 + (row % 2) * hexR * 0.75;
+      const cy = row * hexH * 0.5;
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i - Math.PI / 6;
+        const px = cx + hexR * 0.6 * Math.cos(angle);
+        const py = cy + hexR * 0.6 * Math.sin(angle);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 0.025;
+  for (let i = 0; i < 15; i++) {
+    const px = Math.random() * w;
+    const py = Math.random() * h;
+    const pr = 30 + Math.random() * 40;
+    ctx.beginPath();
+    for (let j = 0; j < 5; j++) {
+      const angle = (Math.PI * 2 * j / 5) - Math.PI / 2;
+      const x = px + pr * Math.cos(angle);
+      const y = py + pr * Math.sin(angle);
+      if (j === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 0.02;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(w * 0.15, h * 0.25, 180, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(w * 0.85, h * 0.75, 220, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(w * 0.5, h * 0.5, 300, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawMatchRow(ctx, match, x, y, w, h) {
+  const homeTeam = TEAMS[match.home];
+  const awayTeam = TEAMS[match.away];
+  const homeImg = homeTeam ? imageCache['team_' + match.home] : null;
+  const awayImg = awayTeam ? imageCache['team_' + match.away] : null;
+  
+  ctx.save();
+  const barGrad = ctx.createLinearGradient(x, y, x, y + h);
+  barGrad.addColorStop(0, 'rgba(120, 0, 20, 0.55)');
+  barGrad.addColorStop(0.5, 'rgba(80, 0, 15, 0.65)');
+  barGrad.addColorStop(1, 'rgba(120, 0, 20, 0.55)');
+  ctx.fillStyle = barGrad;
+  drawRoundedRect(ctx, x, y, w, h, 14);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.fillRect(x + 14, y + 1, w - 28, 2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+  
+  const sideMargin = w * 0.02;
+  const centerW = w * 0.32;
+  const sideW = (w - centerW) / 2 - sideMargin;
+  const centerX = x + w / 2;
+  const logoSize = Math.min(85, h * 0.42);
+  const nameY = y + h * 0.72;
+  
+  const homeX = x + w - sideW / 2 - sideMargin;
+  if (homeImg) {
+    const aspect = homeImg.width / homeImg.height;
+    let dw = logoSize;
+    let dh = logoSize;
+    if (aspect > 1.1) { dh = dw / aspect; }
+    else if (aspect < 0.9) { dw = dh * aspect; }
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur = 15;
+    ctx.drawImage(homeImg, homeX - dw/2, y + h*0.22 - dh/2, dw, dh);
+    ctx.restore();
+  }
+  ctx.fillStyle = '#fff';
+  ctx.font = getFont(Math.max(15, h * 0.11));
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  const homeName = homeTeam ? homeTeam.name : match.home;
+  wrapText(ctx, homeName, homeX, nameY, sideW - 10, h * 0.13);
+  
+  const awayX = x + sideW / 2 + sideMargin;
+  if (awayImg) {
+    const aspect = awayImg.width / awayImg.height;
+    let dw = logoSize;
+    let dh = logoSize;
+    if (aspect > 1.1) { dh = dw / aspect; }
+    else if (aspect < 0.9) { dw = dh * aspect; }
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur = 15;
+    ctx.drawImage(awayImg, awayX - dw/2, y + h*0.22 - dh/2, dw, dh);
+    ctx.restore();
+  }
+  const awayName = awayTeam ? awayTeam.name : match.away;
+  wrapText(ctx, awayName, awayX, nameY, sideW - 10, h * 0.13);
+  
+  const centerTop = y + h * 0.18;
+  ctx.fillStyle = '#fff';
+  ctx.font = getFont(Math.max(30, h * 0.24));
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(match.time, centerX, centerTop + h * 0.18);
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.font = `bold ${Math.max(12, h * 0.07)}px Arial`;
+  ctx.fillText('—', centerX, centerTop + h * 0.38);
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.font = getFont(Math.max(13, h * 0.095));
+  ctx.fillText(match.stadium, centerX, centerTop + h * 0.52);
+  
+  if (match.channels && match.channels.length > 0) {
+    const chY = centerTop + h * 0.72;
+    const chH = Math.min(32, h * 0.16);
+    let totalW = 0;
+    const chWidths = [];
+    match.channels.forEach(chKey => {
+      const chImg = imageCache['channel_' + chKey];
+      if (chImg) {
+        const aspect = chImg.width / chImg.height;
+        let cw = chH * 1.6;
+        let ch = chH;
+        if (aspect > 1.6) { ch = cw / aspect; }
+        else if (aspect < 1.6) { cw = ch * aspect; }
+        chWidths.push({ w: cw, h: ch, img: chImg });
+        totalW += cw + 10;
+      } else {
+        chWidths.push(null);
+      }
+    });
+    totalW -= 10;
+    let chX = centerX - totalW / 2;
+    chWidths.forEach((item) => {
+      if (!item) return;
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.12)';
+      drawRoundedRect(ctx, chX - 5, chY - item.h/2 - 5, item.w + 10, item.h + 10, 8);
+      ctx.fill();
+      ctx.restore();
+      ctx.drawImage(item.img, chX, chY - item.h/2, item.w, item.h);
+      chX += item.w + 14;
+    });
+  }
+}
+
+function renderPoster() {
+  const w = 1080;
+  const h = 1350;
+  ctx.clearRect(0, 0, w, h);
+  
+  const bgGrad = ctx.createRadialGradient(w/2, h/3, 100, w/2, h/2, h);
+  bgGrad.addColorStop(0, '#a00020');
+  bgGrad.addColorStop(0.4, '#800018');
+  bgGrad.addColorStop(1, '#4a000e');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, w, h);
+  
+  drawFootballTexture(ctx, w, h);
+  
+  const vigGrad = ctx.createRadialGradient(w/2, h/2, h*0.25, w/2, h/2, h*0.95);
+  vigGrad.addColorStop(0, 'rgba(0,0,0,0)');
+  vigGrad.addColorStop(1, 'rgba(0,0,0,0.5)');
+  ctx.fillStyle = vigGrad;
+  ctx.fillRect(0, 0, w, h);
+  
+  const headerTop = 35;
+  drawLigue1Logo(ctx, w - 115, headerTop + 85, 140);
+  
+  const textX = w - 210;
+  let textY = headerTop + 25;
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = '#fff';
+  ctx.font = getFont(48);
+  ctx.fillText(state.title, textX, textY);
+  textY += 58;
+  ctx.font = getFont(36);
+  ctx.fillText(state.subtitle, textX, textY);
+  textY += 48;
+  ctx.font = getFont(30);
+  ctx.fillText(state.league, textX, textY);
+  textY += 55;
+  ctx.fillStyle = '#ffd700';
+  ctx.font = getFont(32);
+  ctx.fillText(state.date, textX, textY);
+  
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(50, headerTop + 245);
+  ctx.lineTo(w - 50, headerTop + 245);
+  ctx.stroke();
+  
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.arc(w/2 - 80 + i * 40, headerTop + 245, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  const matchesTop = headerTop + 270;
+  const bottomPadding = 50;
+  const availableH = h - matchesTop - bottomPadding;
+  const matchCount = state.matches.length;
+  const gap = Math.max(10, 18 - matchCount * 2);
+  const rowH = (availableH - (matchCount - 1) * gap) / matchCount;
+  
+  state.matches.forEach((match, idx) => {
+    const y = matchesTop + idx * (rowH + gap);
+    drawMatchRow(ctx, match, 45, y, w - 90, rowH);
+  });
+  
+  const wrapper = document.getElementById('posterWrapper');
+  const rect = wrapper.getBoundingClientRect();
+  const scale = rect.width / w;
+  document.getElementById('scaleInfo').textContent = 
+    `1080 × 1350 px | عرض المعاينة: ${Math.round(rect.width)}px | التكبير: ${(scale * 100).toFixed(0)}%`;
+}
+
+function createMatchCard(match, index) {
+  const div = document.createElement('div');
+  div.className = 'match-card';
+  div.innerHTML = `
+    <div class="match-card-header">
+      <span class="match-number">مباراة ${index + 1}</span>
+      <button class="match-remove" onclick="removeMatch(${index})" title="حذف">×</button>
+    </div>
+    <div class="match-teams">
+      <select onchange="updateMatch(${index}, 'away', this.value)">
+        ${Object.entries(TEAMS).map(([k, t]) => `<option value="${k}" ${match.away === k ? 'selected' : ''}>${t.name}</option>`).join('')}
+      </select>
+      <span class="match-vs">VS</span>
+      <select onchange="updateMatch(${index}, 'home', this.value)">
+        ${Object.entries(TEAMS).map(([k, t]) => `<option value="${k}" ${match.home === k ? 'selected' : ''}>${t.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="match-details">
+      <div class="form-group">
+        <label>الوقت</label>
+        <input type="text" value="${match.time}" onchange="updateMatch(${index}, 'time', this.value)" placeholder="16:30">
+      </div>
+      <div class="form-group">
+        <label>الملعب</label>
+        <input type="text" value="${match.stadium}" onchange="updateMatch(${index}, 'stadium', this.value)" placeholder="اسم الملعب">
+      </div>
+    </div>
+    <div class="channel-grid">
+      ${Object.entries(CHANNELS).map(([k, c]) => `
+        <label class="channel-option">
+          <input type="checkbox" ${match.channels.includes(k) ? 'checked' : ''} onchange="toggleChannel(${index}, '${k}', this.checked)">
+          ${c.name}
+        </label>
+      `).join('')}
+    </div>
+  `;
+  return div;
+}
+
+function renderMatches() {
+  const container = document.getElementById('matchesContainer');
+  container.innerHTML = '';
+  state.matches.forEach((match, idx) => {
+    container.appendChild(createMatchCard(match, idx));
+  });
+}
+
+function updateState() {
+  state.title = document.getElementById('titleInput').value;
+  state.subtitle = document.getElementById('subtitleInput').value;
+  state.league = document.getElementById('leagueInput').value;
+  state.date = document.getElementById('dateInput').value;
+  renderPoster();
+}
+
+function updateMatch(index, field, value) {
+  state.matches[index][field] = value;
+  renderPoster();
+}
+
+function toggleChannel(index, channel, checked) {
+  if (checked) {
+    if (!state.matches[index].channels.includes(channel)) {
+      state.matches[index].channels.push(channel);
+    }
+  } else {
+    state.matches[index].channels = state.matches[index].channels.filter(c => c !== channel);
+  }
+  renderPoster();
+}
+
+function addMatch() {
+  state.matches.push({
+    home: 'EST',
+    away: 'ESS',
+    time: '16:30',
+    stadium: 'الملعب الأولمبي',
+    channels: []
+  });
+  renderMatches();
+  renderPoster();
+}
+
+function removeMatch(index) {
+  if (state.matches.length <= 1) {
+    alert('يجب أن يكون هناك مباراة واحدة على الأقل!');
+    return;
+  }
+  state.matches.splice(index, 1);
+  renderMatches();
+  renderPoster();
+}
+
+function resetToDefault() {
+  state.title = 'تعيينات مباريات';
+  state.subtitle = 'الجولة الأولى ذهاب';
+  state.league = 'لبطولة الرابطة 1';
+  state.date = 'الأحد 23 أوت 2026';
+  state.matches = JSON.parse(JSON.stringify(DEFAULT_MATCHES));
+  document.getElementById('titleInput').value = state.title;
+  document.getElementById('subtitleInput').value = state.subtitle;
+  document.getElementById('leagueInput').value = state.league;
+  document.getElementById('dateInput').value = state.date;
+  renderMatches();
+  renderPoster();
+}
+
+function downloadPNG() {
+  const link = document.createElement('a');
+  link.download = `football-poster-${Date.now()}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function createParticles() {
+  const container = document.getElementById('bgAnim');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 15 + 's';
+    p.style.animationDuration = (10 + Math.random() * 20) + 's';
+    p.style.width = (2 + Math.random() * 4) + 'px';
+    p.style.height = p.style.width;
+    container.appendChild(p);
+  }
+}
+
+async function init() {
+  createParticles();
+  state.matches = JSON.parse(JSON.stringify(DEFAULT_MATCHES));
+  renderMatches();
+  try {
+    await preloadAllAssets();
+    document.getElementById('loadingOverlay').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }, 500);
+  } catch (e) {
+    console.error('Error loading assets:', e);
+    document.getElementById('loadingOverlay').style.display = 'none';
+  }
+  renderPoster();
+  window.addEventListener('resize', () => {
+    renderPoster();
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>
