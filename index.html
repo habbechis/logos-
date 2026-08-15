@@ -825,8 +825,8 @@ function drawMatchRow(ctx, match, x, y, w, h) {
   const logoSize = Math.min(100, barH * 0.55);
   const logoY = y + barH / 2;
   
-  // Home logo (RIGHT side)
-  const homeX = x + w - 90;
+  // Home logo (LEFT side)
+  const homeX = x + 90;
   if (homeImg) {
     const aspect = homeImg.width / homeImg.height;
     let dw = logoSize;
@@ -840,8 +840,8 @@ function drawMatchRow(ctx, match, x, y, w, h) {
     ctx.restore();
   }
   
-  // Away logo (LEFT side)
-  const awayX = x + 90;
+  // Away logo (RIGHT side)
+  const awayX = x + w - 90;
   if (awayImg) {
     const aspect = awayImg.width / awayImg.height;
     let dw = logoSize;
